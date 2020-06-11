@@ -56,7 +56,12 @@ bot = commands.Bot(command_prefix='~')
 
 @bot.command(name='new', help='Starts a new game')
 async def new_game(ctx, only_gb: bool=False):
+    await ctx.send('Generating pictures...')
     get_pictures(only_gb)
+
+    with open('is_solved.txt', 'w') as f:
+        f.write('False')
+
     files = [discord.File(f'canvas_{i}.png', f'clue_{i}.png') for i in range(4)]
     await ctx.send('Here are your four clues, please submit your answer by writing `~guess` and then a latitude and longitude!', files=files)
 
@@ -70,7 +75,13 @@ async def make_guess(ctx, user_lat: float, user_lon: float):
     
 
     if abs(user_lat - lat) < 0.01 and abs(user_lon - lon) < 0.01:
-        await ctx.send(f'Congratulations {ctx.message.author.mention} ! You have solved this problem. Type `~new` to play another!')
+        with open('is_solved.txt', 'r+') as f:
+            current = f.read()
+            if current == 'False':
+                f.write('True')
+                await ctx.send(f'Congratulations {ctx.message.author.mention} ! You have solved this problem. Type `~new` to play another!')
+            else:
+                await ctx.send('Someone\'s already solved that one!')
     else:
         await ctx.send('Try again!')
 
