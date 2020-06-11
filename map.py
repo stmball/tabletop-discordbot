@@ -53,7 +53,6 @@ def get_pictures(only_gb=False):
     browser.close()
 
 bot = commands.Bot(command_prefix='~')
-global is_playing 
 
 @bot.command(name='new', help='Starts a new game')
 async def new_game(ctx, only_gb: bool=False):
@@ -71,7 +70,7 @@ async def make_guess(ctx, user_lat: float, user_lon: float):
     
 
     if abs(user_lat - lat) < 0.01 and abs(user_lon - lon) < 0.01:
-        await ctx.send('Congratulations! You have solved this problem. Type `~new` to play another!')
+        await ctx.send(f'Congratulations {ctx.message.author.mention} ! You have solved this problem. Type `~new` to play another!')
     else:
         await ctx.send('Try again!')
 
